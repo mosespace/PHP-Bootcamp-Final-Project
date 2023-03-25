@@ -1,24 +1,30 @@
 <?php
 
+// Start a PHP session
 session_start();
 
-// initialize the items array in the session if it doesn't already exist
-if (!isset($_SESSION['items'])) {  //This checks if the session variable named "items" has been set. If it hasn't been set, it initializes it as an empty array using the assignment statement $_SESSION['items'] = array();.
+// Check if a session variable called 'items' is not set
+if (!isset($_SESSION['items'])) {
+    // If it's not set, initialize it as an empty array
     $_SESSION['items'] = array();
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") { // This checks if the HTTP request method used by the client to send data to the server is "POST".
-    // collect value of input field
-    $name = $_POST['input-box']; // This line assigns the value of the input field named "input-box" to the variable $name.
-    if (empty($name)) { // This if statement checks if the $name variable is empty.
+// Check if the request method is POST
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    // Get the value of the 'input-box' field from the POST request
+    $name = $_POST['input-box'];
+
+    // Check if the 'input-box' field is empty
+    if (empty($name)) {
+        // If it's empty, display an alert message using JavaScript
         echo '<script>alert("Field can not be empty!")</script>';
     } else {
-        // add the new item to the items array in the session
+        // If it's not empty, add its value to the 'items' array in the session
         $_SESSION['items'][] = $name;
     }
-
+    // In summary, this code starts a session and initializes a session variable called 'items' as an empty array if it's not already set. It checks if the request method is POST and gets the value of a form input field called 'input-box'. If the field is empty, it displays an alert message. Otherwise, it adds the field value to the 'items' array in the session.
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -40,21 +46,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { // This checks if the HTTP request m
                             <button onclick="addTask()">Add</button>
                     </div>
                     <ul id="list-container">
-                    <?php
-                /// Here I Loop through the items array in the session and display each item as a list item
-             // create a new ul element
-        $newUl = new DOMElement('ul');
 
-        foreach ($_SESSION['items'] as $index => $item) {
-            echo "<li id='item-$index'>$item<span class=\"close\" onclick='removeTask($index)'>&times;</span></li>";
-        
-            // Use PHP to output the value of $index to a JavaScript variable
-            //JavaScript code that creates and appends the span element inside the loop that generates the list items, like this:
-        }
-                // loop through the items array in the session and display each item as a list item with a "Delete" button
-                // foreach ($_SESSION['items'] as $index => $item) {
-                //     echo "<li>$item<button class=\"delete-button\" name=\"delete\" value=\"$index\">Delete</button></li>";
+
+                <?php
+                        // Here i create a new `ul` element using the `DOMElement` class
+                        $newUl = new DOMElement('ul');
+
+                        // Here i loop through each item in the 'items' array stored in the session variable
+                        foreach ($_SESSION['items'] as $index => $item) {
+                            // For each item, i created a new `li` element with an id of `item-$index` and the item as its text content!
+                            // Also i added a `span` element with a class of `close` and an `onclick` attribute that calls a `removeTask` function with the current index as its argument.
+                            echo "<li id='item-$index'>$item<span class=\"close\" onclick='removeTask($index)'>&times;</span></li>";
+                        }
+
+                        // In summary, the code creates a new unordered list (ul) element and populates it with a list of items stored in the $_SESSION['items'] array. For each item in the array, a new list item (li) element is created with a unique id attribute and a "close" button (span) that calls a removeTask() function when clicked.
                 ?>
+
+
+                // Inline css style! 
                 <style>
                         ul li span.close {
                         position: absolute !important;
