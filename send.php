@@ -1,31 +1,24 @@
 <?php
-// Here i create an empty array to store items
-// After, i start the session;
+
 session_start();
 
 // initialize the items array in the session if it doesn't already exist
-if (!isset($_SESSION['items'])) {
+if (!isset($_SESSION['items'])) {  //This checks if the session variable named "items" has been set. If it hasn't been set, it initializes it as an empty array using the assignment statement $_SESSION['items'] = array();.
     $_SESSION['items'] = array();
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST") { // This checks if the HTTP request method used by the client to send data to the server is "POST".
     // collect value of input field
-    $name = $_POST['input-box'];
-    if (empty($name)) {
+    $name = $_POST['input-box']; // This line assigns the value of the input field named "input-box" to the variable $name.
+    if (empty($name)) { // This if statement checks if the $name variable is empty.
         echo '<script>alert("Field can not be empty!")</script>';
     } else {
         // add the new item to the items array in the session
         $_SESSION['items'][] = $name;
     }
+
 }
 
-// if (isset($_POST['delete'])) {
-//     // remove the item at the specified index from the items array in the session
-//     $index = $_POST['delete'];
-//     unset($_SESSION['items'][$index]);
-//     // re-index the items array to remove any gaps in the indices
-//     $_SESSION['items'] = array_values($_SESSION['items']);
-// }
 ?>
 
 <!DOCTYPE html>
@@ -35,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To Do | List</title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
@@ -49,16 +42,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <ul id="list-container">
                     <?php
                 /// Here I Loop through the items array in the session and display each item as a list item
-                foreach ($_SESSION['items'] as $item) {
-                    echo "<li>$item</li>";
-                }
+             // create a new ul element
+        $newUl = new DOMElement('ul');
+
+        foreach ($_SESSION['items'] as $index => $item) {
+            echo "<li id='item-$index'>$item<span class=\"close\" onclick='removeTask($index)'>&times;</span></li>";
+        
+            // Use PHP to output the value of $index to a JavaScript variable
+            //JavaScript code that creates and appends the span element inside the loop that generates the list items, like this:
+        }
                 // loop through the items array in the session and display each item as a list item with a "Delete" button
                 // foreach ($_SESSION['items'] as $index => $item) {
                 //     echo "<li>$item<button class=\"delete-button\" name=\"delete\" value=\"$index\">Delete</button></li>";
                 ?>
+                <style>
+                        ul li span.close {
+                        position: absolute !important;
+                        right: 0;
+                        top: 5px;
+                        width: 40px;
+                        height: 40px;
+                        font-size: 22px;
+                        color: #555;
+                        line-height: 40px;
+                        text-align: center;
+                        border-radius: 50%;
+                    }
+                    ul li span.close:hover {
+                        background: #edeef0;
+                    }
+                </style>
+
                     </ul>
                     
-                    <!-- <button onclick="addTask()">Remove Checked</button> -->
             </div>
     </form>
     </div>
@@ -73,6 +89,65 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 this.classList.toggle("checked");
             });
         });
+
+        var closeSpan = document.querySelectorAll('.close');
+
+// Loop through each span and add a click event listener
+function removeTask(index) {
+  var listItem = document.getElementById("item-" + index);
+  
+  // Check if the list item has the 'checked' class
+  if (listItem.classList.contains('checked')) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "delete.php");
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        // Remove the li element from the list
+        listItem.parentNode.removeChild(listItem);
+      } else {
+        alert('An error occurred while deleting the item.');
+      }
+    };
+    xhr.send("index=" + index);
+  } else {
+    alert('Item must be checked before it can be removed.');
+  }
+}
+
+
+
+
+//    // Get all the close spans
+// var closeSpan = document.querySelectorAll('.close');
+
+// // Loop through each span and add a click event listener
+// closeSpan.forEach(function(span) {
+//     span.addEventListener('click', function() {
+//         // Get the parent li element of the span
+//         var listItem = span.parentNode;
+
+//         // Get the index of the item being deleted
+//         var index = Array.prototype.indexOf.call(listItem.parentNode.children, listItem);
+
+//         // Remove the item from the session array
+//         if (index > -1) {
+        //   { <?php unset($_SESSION['items']['']); ?>;}
+//         }
+
+//         // Remove the li element from the list
+//         listItem.parentNode.removeChild(listItem);
+//     });
+// });
+// listContainer.addEventListener("click", function(e){
+//     if(e.target.tagName === "LI"){
+//         e.target.classList.toggle("listItems");
+//     }
+//     else if(e.target.tagName === "SPAN"){
+//         e.tagName.parent.Element.remove();
+//     }
+// }, false);
+    
     </script>
 </body>
 </html>
