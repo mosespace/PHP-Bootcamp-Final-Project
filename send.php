@@ -18,9 +18,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if the 'input-box' field is empty
     if (empty($name)) {
         // If it's empty, display an alert message using JavaScript
-        echo "<script>
-        alert('Can Not Add An Empty List!')
-        </script>";
+        echo "<script>alert('Can Not Add An Empty List!')</script>"
+        
+        ;
     } else {
         // If it's not empty, add its value to the 'items' array in the session
         $_SESSION['items'][] = $name;
@@ -119,8 +119,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Here am trying to check if the list item has the 'checked' class
         if (listItem.classList.contains('checked')) {
             // I Created a new XMLHttpRequest object
-            var xhr = new XMLHttpRequest();
-            // I set the HTTP method and URL for the request
+            var xhr = new XMLHttpRequest(); // a JavaScript API to create AJAX requests. Its methods provide the ability to send network requests between the browser and a server. // in simple terms, communicate with servers.
+            
+            // I set the HTTP method and URL for the request.
             xhr.open("POST", "delete.php");
             // I set the request header
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
